@@ -63,7 +63,8 @@ void productMenu()
     printf("1 - Adicionar produtos\n");
     printf("2 - Visualizar produtos\n");
     printf("3 - Visualizar restaurantes\n");
-    printf("4 - Voltar\n");
+    printf("4 - Listar produtos nas comandas\n");
+    printf("5 - Voltar\n");
     setColor(7);
 }
 
@@ -153,6 +154,9 @@ int main()
                     listRestaurants();
                     break;
                 case 4:
+                    listProductsComand();
+                    break;
+                case 5:
                     break;
                 default:
                     printf("Opção inválida! Tente novamente.\n");
@@ -160,9 +164,9 @@ int main()
                 }
 
                 system("pause"); // Pausa antes de limpar a tela
-            } while (optionProducts != 4);
+            } while (optionProducts != 5);
             break;
-        case 3:
+        case 3: // Menu comandas
             do
             {
                 clearScreenWithTitle();
@@ -184,10 +188,9 @@ int main()
                     addProductComand();
                     break;
                 case 4:
-                   
-                case 5:
+                    payment();
                     break;
-                case 6:
+                case 5:
                     break;
                 default:
                     printf("Opção inválida! Tente novamente.\n");
@@ -195,7 +198,7 @@ int main()
                 }
 
                 system("pause"); // Pausa antes de limpar a tela
-            } while (optionComand != 6);
+            } while (optionComand != 5);
             break;
         case 4:
             printf("Saindo...\n");
