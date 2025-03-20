@@ -6,37 +6,44 @@
 #define DB_FILE "restaurant.bin"
 
 // Função para verificar se o ID já existe no arquivo
-int idExiste(int id) {
+int idExiste(int id)
+{
     FILE *file = fopen(DB_FILE, "rb");
-    if (!file) return 0; // Se o arquivo não existe, o ID não existe
+    if (!file)
+        return 0; // Se o arquivo não existe, o ID não existe
 
     Restaurant restaurant;
-    while (fread(&restaurant, sizeof(Restaurant), 1, file)) {
-        if (restaurant.id == id) {
+    while (fread(&restaurant, sizeof(Restaurant), 1, file))
+    {
+        if (restaurant.id == id)
+        {
             fclose(file);
             return 1; // ID já existe
         }
     }
-    
+
     fclose(file);
     return 0; // ID não encontrado
 }
 
-void addRestaurant() {
+void addRestaurant()
+{
     FILE *file = fopen(DB_FILE, "ab");
-    if (!file) {
+    if (!file)
+    {
         perror("Erro ao abrir o arquivo");
         return;
     }
-    
+
     Restaurant restaurant;
-    
+
     // Solicitar e validar o ID do restaurante
     printf("Digite o ID do restaurante: ");
     scanf("%d", &restaurant.id);
     getchar(); // Limpar buffer do Enter
-    
-    if (idExiste(restaurant.id)) {
+
+    if (idExiste(restaurant.id))
+    {
         printf("Já existe um restaurante com esse ID!\n");
         fclose(file);
         return;
@@ -58,21 +65,24 @@ void addRestaurant() {
     // Escrevendo no arquivo
     fwrite(&restaurant, sizeof(Restaurant), 1, file);
     fclose(file);
-    
+
     printf("Restaurante adicionado com sucesso!\n");
 }
 
-void listRestaurants() {
+void listRestaurants()
+{
     FILE *file = fopen(DB_FILE, "rb");
-    if (!file) {
+    if (!file)
+    {
         printf("Nenhum restaurante cadastrado ainda.\n");
         return;
     }
-    
+
     Restaurant restaurant;
     printf("Lista de Restaurantes:\n");
-    while (fread(&restaurant, sizeof(Restaurant), 1, file)) {
-        printf("ID: %d, Nome: %s, Tipo: %s, Contato: %s\n", 
+    while (fread(&restaurant, sizeof(Restaurant), 1, file))
+    {
+        printf("ID: %d, Nome: %s, Tipo: %s, Contato: %s\n",
                restaurant.id, restaurant.name, restaurant.type, restaurant.contact);
     }
     fclose(file);
