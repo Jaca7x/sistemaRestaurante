@@ -3,11 +3,13 @@
 
 #define MAX_NAME 50
 
-typedef struct {
+typedef struct
+{
     int id;
     char name[MAX_NAME];
     float price;
-    int restaurantId;  // Adicionado para vincular um produto a um restaurante
+    int restaurantId; // Adicionado para vincular um produto a um restaurante
+    int comandId;     // Adicionado para vincular um produto a uma comanda
 } Products;
 
 #endif
