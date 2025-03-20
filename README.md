@@ -18,8 +18,12 @@ Logo após:
 
 - Controle de restaurantes <br>
 - Controle de comandas    <br>
-- Controle de produtos
+- Controle de produtos  <br>
+- Adicionar produtos a restaurantes/comandas <br>
+- Adicionar comandas a restaurantes  <br>
+- Calcular o preço final da comanda  <br>
 
 
-# MAIS ATUALIZAÇÕES CHEGANDO...
+
+
 
