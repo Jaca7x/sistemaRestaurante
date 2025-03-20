@@ -10,7 +10,8 @@ typedef struct {
     int id;
     char name[MAX_NAME];
     float price;
-    int restaurantId;  // Adicionado para vincular um produto a um restaurante
+    int restaurantId;
+    int comandId;
 } Products;
 
 #endif
@@ -19,4 +20,9 @@ typedef struct {
 ```
 
 ## restaurantId
+
 - Adicionado para vincular um produto a um restaurante
+
+## comandId
+
+- Adicionado para vincular um produto a uma comanda
