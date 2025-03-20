@@ -8,16 +8,20 @@
 #define COMAND_FILE "comand.bin"
 
 // Função para verificar se o restaurante existe no arquivo
-int idComandRestauranteExiste(int id) {
+int idComandRestauranteExiste(int id)
+{
     FILE *file = fopen(RESTAURANT_FILE, "rb");
-    if (!file) {
+    if (!file)
+    {
         printf("Erro ao abrir o arquivo de restaurantes.\n");
         return 0;
     }
 
     Restaurant restaurant;
-    while (fread(&restaurant, sizeof(Restaurant), 1, file)) {
-        if (restaurant.id == id) {
+    while (fread(&restaurant, sizeof(Restaurant), 1, file))
+    {
+        if (restaurant.id == id)
+        {
             fclose(file);
             return 1;
         }
@@ -28,13 +32,17 @@ int idComandRestauranteExiste(int id) {
 }
 
 // Função para verificar se uma comanda já existe para o restaurante
-int comandaExiste(int restaurantId, int comandId) {
+int comandaExiste(int restaurantId, int comandId)
+{
     FILE *file = fopen(COMAND_FILE, "rb");
-    if (!file) return 0;
+    if (!file)
+        return 0;
 
     Comands comands;
-    while (fread(&comands, sizeof(Comands), 1, file)) {
-        if (comands.id == comandId && comands.restaurantId == restaurantId) {
+    while (fread(&comands, sizeof(Comands), 1, file))
+    {
+        if (comands.id == comandId && comands.restaurantId == restaurantId)
+        {
             fclose(file);
             return 1;
         }
@@ -45,19 +53,22 @@ int comandaExiste(int restaurantId, int comandId) {
 }
 
 // Função para adicionar uma comanda a um restaurante
-void addComands() {
+void addComands()
+{
     FILE *file = fopen(COMAND_FILE, "ab");
-    if (!file) {
+    if (!file)
+    {
         perror("Erro ao abrir o arquivo de comandas.");
         return;
     }
-    
+
     int idRestauranteComands;
     printf("Digite o ID do restaurante para adicionar uma comanda: ");
     scanf("%d", &idRestauranteComands);
     getchar();
 
-    if (!idComandRestauranteExiste(idRestauranteComands)) {
+    if (!idComandRestauranteExiste(idRestauranteComands))
+    {
         printf("Restaurante não encontrado! A comanda não pode ser adicionada.\n");
         fclose(file);
         return;
@@ -70,7 +81,8 @@ void addComands() {
     scanf("%d", &comands.id);
     getchar();
 
-    if (comandaExiste(idRestauranteComands, comands.id)) {
+    if (comandaExiste(idRestauranteComands, comands.id))
+    {
         printf("Já existe uma comanda com esse ID nesse restaurante.\n");
         fclose(file);
         return;
@@ -87,15 +99,18 @@ void addComands() {
 }
 
 // Função para listar as comandas e seus restaurantes associados
-void listComands() {
+void listComands()
+{
     FILE *comandFile = fopen(COMAND_FILE, "rb");
-    if (!comandFile) {
+    if (!comandFile)
+    {
         printf("Nenhuma comanda cadastrada ainda.\n");
         return;
     }
 
     FILE *restaurantFile = fopen(RESTAURANT_FILE, "rb");
-    if (!restaurantFile) {
+    if (!restaurantFile)
+    {
         printf("Erro ao abrir o arquivo de restaurantes.\n");
         fclose(comandFile);
         return;
@@ -105,22 +120,28 @@ void listComands() {
     Comands comands;
     Restaurant restaurant;
 
-    while (fread(&comands, sizeof(Comands), 1, comandFile)) {
+    while (fread(&comands, sizeof(Comands), 1, comandFile))
+    {
         int restauranteEncontradoComands = 0;
 
         rewind(restaurantFile);
-        while (fread(&restaurant, sizeof(Restaurant), 1, restaurantFile)) {
-            if (restaurant.id == comands.restaurantId) {
+        while (fread(&restaurant, sizeof(Restaurant), 1, restaurantFile))
+        {
+            if (restaurant.id == comands.restaurantId)
+            {
                 restauranteEncontradoComands = 1;
                 break;
             }
         }
 
         printf("------------------------------------------\n");
-        if (restauranteEncontradoComands) {
+        if (restauranteEncontradoComands)
+        {
             printf("Restaurante ID: %d\n", comands.restaurantId);
             printf("Nome do Restaurante: %s\n", restaurant.name);
-        } else {
+        }
+        else
+        {
             printf("Restaurante ID: %d (NÃO ENCONTRADO)\n", comands.restaurantId);
         }
         printf("Comanda ID: %d\n", comands.id);
@@ -132,7 +153,44 @@ void listComands() {
     fclose(restaurantFile);
 }
 
-// Função de pagamento das comandas
-void payment() {
-    
+void payment()
+{
+    FILE *productFile = fopen(PRODUCT_FILE, "rb");
+    if (!productFile)
+    {
+        printf("Nenhum produto cadastrado ainda.\n");
+        return;
+    }
+
+    int comandId;
+    printf("Digite o ID da comanda para calcular o pagamento: ");
+    scanf("%d", &comandId);
+
+    Products products;
+    float total = 0;
+    int encontrou = 0;
+
+    printf("\nProdutos da Comanda %d:\n", comandId);
+    while (fread(&products, sizeof(Products), 1, productFile))
+    {
+        if (products.comandId == comandId)
+        {
+            encontrou = 1;
+            total += products.price;
+            printf("%s - R$ %.2f\n", products.name, products.price);
+        }
+    }
+
+    fclose(productFile);
+
+    if (encontrou)
+    {
+        printf("------------------------------------\n");
+        printf("Total a pagar: R$ %.2f\n", total);
+        printf("------------------------------------\n");
+    }
+    else
+    {
+        printf("Nenhum produto encontrado para esta comanda.\n");
+    }
 }
