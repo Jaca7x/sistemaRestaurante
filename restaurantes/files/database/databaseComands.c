@@ -8,9 +8,8 @@
 #define COMAND_FILE "comand.bin"
 #define PRODUCT_FILE "product.bin"
 
-
 // Função para verificar se o restaurante existe no arquivo
-int idComandRestauranteExiste(int id)
+int idComandRestaurantExists(int id)
 {
     FILE *file = fopen(RESTAURANT_FILE, "rb");
     if (!file)
@@ -34,7 +33,7 @@ int idComandRestauranteExiste(int id)
 }
 
 // Função para verificar se uma comanda já existe para o restaurante
-int comandaExiste(int restaurantId, int comandId)
+int comandExists(int restaurantId, int comandId)
 {
     FILE *file = fopen(COMAND_FILE, "rb");
     if (!file)
@@ -64,12 +63,12 @@ void addComands()
         return;
     }
 
-    int idRestauranteComands;
+    int idRestaurantComands;
     printf("Digite o ID do restaurante para adicionar uma comanda: ");
-    scanf("%d", &idRestauranteComands);
+    scanf("%d", &idRestaurantComands);
     getchar();
 
-    if (!idComandRestauranteExiste(idRestauranteComands))
+    if (!idComandRestaurantExists(idRestaurantComands))
     {
         printf("Restaurante não encontrado! A comanda não pode ser adicionada.\n");
         fclose(file);
@@ -77,13 +76,13 @@ void addComands()
     }
 
     Comands comands;
-    comands.restaurantId = idRestauranteComands;
+    comands.restaurantId = idRestaurantComands;
 
     printf("Digite o ID da comanda: ");
     scanf("%d", &comands.id);
     getchar();
 
-    if (comandaExiste(idRestauranteComands, comands.id))
+    if (comandExists(idRestaurantComands, comands.id))
     {
         printf("Já existe uma comanda com esse ID nesse restaurante.\n");
         fclose(file);
@@ -97,7 +96,7 @@ void addComands()
     fwrite(&comands, sizeof(Comands), 1, file);
     fclose(file);
 
-    printf("Comanda adicionada com sucesso ao restaurante ID %d!\n", idRestauranteComands);
+    printf("Comanda adicionada com sucesso ao restaurante ID %d!\n", idRestaurantComands);
 }
 
 // Função para listar as comandas e seus restaurantes associados
@@ -124,20 +123,20 @@ void listComands()
 
     while (fread(&comands, sizeof(Comands), 1, comandFile))
     {
-        int restauranteEncontradoComands = 0;
+        int restaurantFoundComands = 0;
 
         rewind(restaurantFile);
         while (fread(&restaurant, sizeof(Restaurant), 1, restaurantFile))
         {
             if (restaurant.id == comands.restaurantId)
             {
-                restauranteEncontradoComands = 1;
+                restaurantFoundComands = 1;
                 break;
             }
         }
 
         printf("------------------------------------------\n");
-        if (restauranteEncontradoComands)
+        if (restaurantFoundComands)
         {
             printf("Restaurante ID: %d\n", comands.restaurantId);
             printf("Nome do Restaurante: %s\n", restaurant.name);
@@ -170,7 +169,7 @@ void payment()
     scanf("%d", &restaurantId);
     getchar();
 
-    if (!idComandRestauranteExiste(restaurantId))
+    if (!idComandRestaurantExists(restaurantId))
     {
         printf("Restaurante não encontrado!\n");
         fclose(restaurantFile);
@@ -196,14 +195,14 @@ void payment()
 
             Products products;
             float total = 0;
-            int encontrou = 0;
+            int found = 0;
 
             printf("\nProdutos da Comanda %d:\n", comandId);
             while (fread(&products, sizeof(Products), 1, productFile))
             {
                 if (products.comandId == comandId)
                 {
-                    encontrou = 1;
+                    found = 1;
                     total += products.price;
                     printf("%s - R$ %.2f\n", products.name, products.price);
                 }
@@ -211,7 +210,7 @@ void payment()
 
             fclose(productFile);
 
-            if (encontrou)
+            if (found)
             {
                 printf("------------------------------------\n");
                 printf("Total a pagar: R$ %.2f\n", total);
