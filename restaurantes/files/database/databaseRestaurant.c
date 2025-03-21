@@ -3,12 +3,12 @@
 #include <string.h>
 #include "../struct/restaurant/restaurant.h"
 
-#define DB_FILE "restaurant.bin"
+#define RESTAURANT_FILE "restaurant.bin"
 
 // Função para verificar se o ID já existe no arquivo
-int idExiste(int id)
+int idExists(int id)
 {
-    FILE *file = fopen(DB_FILE, "rb");
+    FILE *file = fopen(RESTAURANT_FILE, "rb");
     if (!file)
         return 0; // Se o arquivo não existe, o ID não existe
 
@@ -28,7 +28,7 @@ int idExiste(int id)
 
 void addRestaurant()
 {
-    FILE *file = fopen(DB_FILE, "ab");
+    FILE *file = fopen(RESTAURANT_FILE, "ab");
     if (!file)
     {
         perror("Erro ao abrir o arquivo");
@@ -42,7 +42,7 @@ void addRestaurant()
     scanf("%d", &restaurant.id);
     getchar(); // Limpar buffer do Enter
 
-    if (idExiste(restaurant.id))
+    if (idExists(restaurant.id))
     {
         printf("Já existe um restaurante com esse ID!\n");
         fclose(file);
@@ -71,7 +71,7 @@ void addRestaurant()
 
 void listRestaurants()
 {
-    FILE *file = fopen(DB_FILE, "rb");
+    FILE *file = fopen(RESTAURANT_FILE, "rb");
     if (!file)
     {
         printf("Nenhum restaurante cadastrado ainda.\n");
