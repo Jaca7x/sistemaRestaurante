@@ -6,6 +6,8 @@
 
 #define RESTAURANT_FILE "restaurant.bin"
 #define COMAND_FILE "comand.bin"
+#define PRODUCT_FILE "product.bin"
+
 
 // Função para verificar se o restaurante existe no arquivo
 int idComandRestauranteExiste(int id)
