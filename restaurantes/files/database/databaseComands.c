@@ -155,42 +155,74 @@ void listComands()
 
 void payment()
 {
-    FILE *productFile = fopen(PRODUCT_FILE, "rb");
-    if (!productFile)
+
+    FILE *restaurantFile = fopen(RESTAURANT_FILE, "rb");
+    if (!restaurantFile)
     {
-        printf("Nenhum produto cadastrado ainda.\n");
+        printf("Nenhum restaurtante cadastrado ainda.\n");
         return;
     }
 
-    int comandId;
-    printf("Digite o ID da comanda para calcular o pagamento: ");
-    scanf("%d", &comandId);
+    int restaurantId;
+    printf("Digite o ID do restaurante que está a comanda para calcular o pagamento: ");
+    scanf("%d", &restaurantId);
+    getchar();
 
-    Products products;
-    float total = 0;
-    int encontrou = 0;
-
-    printf("\nProdutos da Comanda %d:\n", comandId);
-    while (fread(&products, sizeof(Products), 1, productFile))
+    if (!idComandRestauranteExiste(restaurantId))
     {
-        if (products.comandId == comandId)
+        printf("Restaurante não encontrado!\n");
+        fclose(restaurantFile);
+        return;
+    }
+
+    Restaurant restaurants;
+    int existe = 0;
+    while (fread(&restaurants, sizeof(Restaurant), 1, restaurantFile))
+    {
+        if (!existe)
         {
-            encontrou = 1;
-            total += products.price;
-            printf("%s - R$ %.2f\n", products.name, products.price);
+            FILE *productFile = fopen(PRODUCT_FILE, "rb");
+            if (!productFile)
+            {
+                printf("Nenhum produto cadastrado ainda.\n");
+                return;
+            }
+
+            int comandId;
+            printf("Digite o ID da comanda para calcular o pagamento: ");
+            scanf("%d", &comandId);
+
+            Products products;
+            float total = 0;
+            int encontrou = 0;
+
+            printf("\nProdutos da Comanda %d:\n", comandId);
+            while (fread(&products, sizeof(Products), 1, productFile))
+            {
+                if (products.comandId == comandId)
+                {
+                    encontrou = 1;
+                    total += products.price;
+                    printf("%s - R$ %.2f\n", products.name, products.price);
+                }
+            }
+
+            fclose(productFile);
+
+            if (encontrou)
+            {
+                printf("------------------------------------\n");
+                printf("Total a pagar: R$ %.2f\n", total);
+                printf("------------------------------------\n");
+            }
+            else
+            {
+                printf("Nenhum produto encontrado para esta comanda.\n");
+            }
         }
-    }
-
-    fclose(productFile);
-
-    if (encontrou)
-    {
-        printf("------------------------------------\n");
-        printf("Total a pagar: R$ %.2f\n", total);
-        printf("------------------------------------\n");
-    }
-    else
-    {
-        printf("Nenhum produto encontrado para esta comanda.\n");
+        else
+        {
+            printf("Restaurante não encontrado");
+        }
     }
 }
