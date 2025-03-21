@@ -10,7 +10,7 @@
 #define COMAND_FILE "comand.bin"
 
 // Função para verificar se o restaurante existe no arquivo
-int idRestauranteExiste(int id)
+int idRestaurantExists(int id)
 {
     FILE *file = fopen(RESTAURANT_FILE, "rb");
     if (!file)
@@ -34,7 +34,7 @@ int idRestauranteExiste(int id)
 }
 
 // Função para verificar se a comanda existe no restaurante
-int idComandaExiste(int id)
+int idComandExits(int id)
 {
     FILE *file = fopen(COMAND_FILE, "rb");
     if (!file)
@@ -57,7 +57,7 @@ int idComandaExiste(int id)
 }
 
 // Função para verificar se um produto já existe para o restaurante
-int produtoExiste(int restaurantId, int productId)
+int productExists(int restaurantId, int productId)
 {
     FILE *file = fopen(PRODUCT_FILE, "rb");
     if (!file)
@@ -87,12 +87,12 @@ void addProduct()
         return;
     }
 
-    int idRestaurante;
+    int idRestaurant;
     printf("Digite o ID do restaurante para adicionar um produto: ");
-    scanf("%d", &idRestaurante);
+    scanf("%d", &idRestaurant);
     getchar(); // Limpa o buffer
 
-    if (!idRestauranteExiste(idRestaurante))
+    if (!idRestaurantExists(idRestaurant))
     {
         printf("Restaurante não encontrado! Produto não pode ser adicionado.\n");
         fclose(file);
@@ -100,14 +100,14 @@ void addProduct()
     }
 
     Products product;
-    product.restaurantId = idRestaurante;
+    product.restaurantId = idRestaurant;
     product.comandId = -1; // Inicializa como -1 (sem comanda)
 
     printf("Digite o ID do produto: ");
     scanf("%d", &product.id);
     getchar(); // Limpa o buffer
 
-    if (produtoExiste(idRestaurante, product.id))
+    if (productExists(idRestaurant, product.id))
     {
         printf("Já existe um produto com esse ID nesse restaurante.\n");
         fclose(file);
@@ -125,7 +125,7 @@ void addProduct()
     fwrite(&product, sizeof(Products), 1, file);
     fclose(file);
 
-    printf("Produto adicionado com sucesso ao restaurante ID %d!\n", idRestaurante);
+    printf("Produto adicionado com sucesso ao restaurante ID %d!\n", idRestaurant);
 }
 
 void addProductComand()
@@ -137,12 +137,12 @@ void addProductComand()
         return;
     }
 
-    int idRestaurante, idComand, idProduto;
+    int idRestaurant, idComand, idProduct;
     printf("Digite o ID do restaurante para adicionar um produto: ");
-    scanf("%d", &idRestaurante);
+    scanf("%d", &idRestaurant);
     getchar();
 
-    if (!idRestauranteExiste(idRestaurante))
+    if (!idRestaurantExists(idRestaurant))
     {
         printf("Restaurante não encontrado! Produto não pode ser adicionado.\n");
         fclose(fileProduct);
@@ -153,7 +153,7 @@ void addProductComand()
     scanf("%d", &idComand);
     getchar();
 
-    if (!idComandaExiste(idComand))
+    if (!idComandExits(idComand))
     {
         printf("Comanda não encontrada! Produto não pode ser adicionado.\n");
         fclose(fileProduct);
@@ -161,32 +161,32 @@ void addProductComand()
     }
 
     printf("Digite o ID do produto: ");
-    scanf("%d", &idProduto);
+    scanf("%d", &idProduct);
     getchar();
 
     Products product;
-    int encontrado = 0;
-    long posicao; // Para armazenar a posição correta do arquivo
+    int found = 0;
+    long position; // Para armazenar a posição correta do arquivo
 
     while (fread(&product, sizeof(Products), 1, fileProduct))
     {
-        if (product.id == idProduto && product.restaurantId == idRestaurante)
+        if (product.id == idProduct && product.restaurantId == idRestaurant)
         {
-            encontrado = 1;
+            found = 1;
             product.comandId = idComand; // Atualiza a comanda
 
-            posicao = ftell(fileProduct) - sizeof(Products); // Calcula a posição do registro
-            fseek(fileProduct, posicao, SEEK_SET);           // Move o ponteiro para a posição correta
+            position = ftell(fileProduct) - sizeof(Products); // Calcula a posição do registro
+            fseek(fileProduct, position, SEEK_SET);           // Move o ponteiro para a posição correta
             fwrite(&product, sizeof(Products), 1, fileProduct);
             fflush(fileProduct); // Garante que os dados sejam escritos
-            printf("Produto ID %d adicionado à comanda %d com sucesso!\n", idProduto, idComand);
+            printf("Produto ID %d adicionado à comanda %d com sucesso!\n", idProduct, idComand);
             break;
         }
     }
 
-    if (!encontrado)
+    if (!found)
     {
-        printf("Produto não encontrado no restaurante %d.\n", idRestaurante);
+        printf("Produto não encontrado no restaurante %d.\n", idRestaurant);
     }
 
     fclose(fileProduct);
@@ -215,7 +215,7 @@ void listProducts()
 
     while (fread(&product, sizeof(Products), 1, productFile))
     {
-        int restauranteEncontrado = 0;
+        int restaurantFound = 0;
 
         // Buscar restaurante correspondente ao produto
         rewind(restaurantFile); // Voltar ao início do arquivo de restaurantes
@@ -223,14 +223,14 @@ void listProducts()
         {
             if (restaurant.id == product.restaurantId)
             {
-                restauranteEncontrado = 1;
+                restaurantFound = 1;
                 break;
             }
         }
 
         // Exibir os produtos e seus restaurantes
         printf("------------------------------------------\n");
-        if (restauranteEncontrado)
+        if (restaurantFound)
         {
             printf("Restaurante ID: %d\n", restaurant.id);
             printf("Nome do Restaurante: %s\n", restaurant.name);
@@ -280,19 +280,19 @@ void listProductsComand()
         printf("DEBUG - Produto ID: %d, Nome: %s, Comanda ID: %d, Restaurante ID: %d\n",
                product.id, product.name, product.comandId, product.restaurantId);
 
-        int comandaEncontrada = 0;
+        int comandFound = 0;
         rewind(comandFile);
         while (fread(&comand, sizeof(Comands), 1, comandFile))
         {
             if (comand.id == product.comandId)
             {
-                comandaEncontrada = 1;
+                comandFound = 1;
                 break;
             }
         }
 
         printf("------------------------------------------\n");
-        if (comandaEncontrada)
+        if (comandFound)
         {
             printf("ID da Comanda: %d\n", product.comandId);
         }
