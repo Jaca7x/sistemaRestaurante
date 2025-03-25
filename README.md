@@ -3,7 +3,7 @@
 Os arquivos são salvos em **.bin**
 
 ## Execução:
-Faça dowload das pasta, extraia e execute no terminal:
+Faça dowload das pastas, extraia e execute no terminal:
 ```bash
 gcc -o sistema sistema.c
 ```
