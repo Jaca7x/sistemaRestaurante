@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../struct/restaurant/restaurant.h"
 #include "../struct/comand/comand.h"
+#include "../struct/products/products.h"
 
 #define RESTAURANT_FILE "restaurant.bin"
 #define COMAND_FILE "comand.bin"
